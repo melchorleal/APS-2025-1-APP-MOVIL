@@ -9,6 +9,12 @@ import 'package:provider/provider.dart';
 
 Future <void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Color(0xFFF5F5F5), // Cambia al color de fondo de arriba, del systema
+      systemNavigationBarColor: Color(0xFFF5F5F5), // Cambia al color de abajo, del sistema
+    ),
+  );
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -32,13 +38,18 @@ class AppState extends StatelessWidget {
 
 Future <void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Color(0xFFF5F5F5), // Cambia al color de fondo de arriba, del systema
+      systemNavigationBarColor: Color(0xFFF5F5F5), // Cambia al color de abajo, del sistema
+    ),
+  );
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

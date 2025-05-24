@@ -64,6 +64,7 @@ class _FolioInput extends StatelessWidget {
           hintText: 'Ingrese su número de folio',
           hintStyle: TextStyle(fontSize: 13.5, color: const Color(0xFFB8B8B8)),
           helperText: 'Ejemplo: 1234567890',
+          helperStyle: TextStyle( color: const Color(0xFFB8B8B8)),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(9),
           ),

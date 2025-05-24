@@ -13,8 +13,10 @@ class Package {
   final String date;
   final String time;
 
+  /*
   factory Package.fromJson(String str) =>
       Package.fromMap(json.decode(str));
+  */
 
   factory Package.fromMap(Map<String, dynamic> json) {
     return Package(

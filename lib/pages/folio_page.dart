@@ -60,6 +60,7 @@ class _FolioInput extends StatelessWidget {
       height: 65,
       margin: EdgeInsets.only(bottom: 50),
       child: TextField(
+        
         decoration: InputDecoration(
           hintText: 'Ingrese su número de folio',
           hintStyle: TextStyle(fontSize: 13.5, color: const Color(0xFFB8B8B8)),
@@ -88,6 +89,7 @@ class _SearchButton extends StatelessWidget {
       height: 50,
       child: ElevatedButton(
         onPressed: () => Navigator.pushNamed(context, 'tracking_page'),
+        
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF355F88),
           shape: RoundedRectangleBorder(

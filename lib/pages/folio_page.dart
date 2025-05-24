@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/package_provider.dart';
 
 class FolioPage extends StatelessWidget {
   const FolioPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController folioController = TextEditingController();
+
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(1),
@@ -14,8 +18,8 @@ class FolioPage extends StatelessWidget {
           children: [
             _Logo(),
             _FolioTitle(),
-            _FolioInput(),
-            _SearchButton(),
+            _FolioInput(controller: folioController,),
+            _SearchButton(controller: folioController),
           ],
         ),
       ),
@@ -53,6 +57,9 @@ class _FolioTitle extends StatelessWidget {
 }
 
 class _FolioInput extends StatelessWidget {
+  final TextEditingController controller;
+
+  const _FolioInput({Key? key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +67,8 @@ class _FolioInput extends StatelessWidget {
       height: 65,
       margin: EdgeInsets.only(bottom: 50),
       child: TextField(
-        
+        controller: controller,
+
         decoration: InputDecoration(
           hintText: 'Ingrese su número de folio',
           hintStyle: TextStyle(fontSize: 13.5, color: const Color(0xFFB8B8B8)),
@@ -80,16 +88,45 @@ class _FolioInput extends StatelessWidget {
 }
 
 class _SearchButton extends StatelessWidget {
+  final TextEditingController controller;
+
+  const _SearchButton({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       margin: EdgeInsets.only(bottom: 30),
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: () => Navigator.pushNamed(context, 'tracking_page'),
+//        onPressed: () => Navigator.pushNamed(context, 'tracking_page'),
         
+        onPressed: () async {
+          final folio = controller.text.trim();
+          if (folio.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Por favor ingrese un número de folio.'),
+                duration: Duration(seconds: 3),
+              ),
+            );
+            return;
+          }
+          final packageProvider = Provider.of<PackageProvider>(context, listen: false);
+          await packageProvider.fetchPackage(folio);
+          if (packageProvider.package != null) {
+            Navigator.pushNamed(context, 'tracking_page', arguments: packageProvider.package);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(packageProvider.errorMessage ?? 'Error al buscar el paquete.', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+                duration: Duration(seconds: 3),
+                backgroundColor:  const Color(0xFFFFA1A1),
+              ),
+            );
+          } 
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF355F88),
           shape: RoundedRectangleBorder(

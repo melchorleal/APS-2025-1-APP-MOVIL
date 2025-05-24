@@ -25,18 +25,17 @@ class PackageProvider with ChangeNotifier {
         _errorMessage = null;
       } else if (response.statusCode == 404) {
         _package = null;
-        _errorMessage = 'No se encontró el envío con ese folio.';
+        _errorMessage = 'No se encontró el envío con ese folio. (Error 404)';
       } else {
         _package = null;
-        _errorMessage = 'Error al consultar la API.';
+        _errorMessage = 'Error al consultar la API.\nCódigo: ${response.statusCode}';
       }
 
     } catch (error) {
       _package = null;
-      _errorMessage = 'Error al consultar la API: $error';
+      _errorMessage = 'No se pudo conectar con el servidor.\nDetalle: $error';
     }
 
     notifyListeners();
   }
-
 }

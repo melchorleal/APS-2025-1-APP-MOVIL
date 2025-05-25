@@ -12,7 +12,6 @@ class FolioPage extends StatelessWidget {
 
     return Scaffold(
       body: Container(
-        //color: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: 40),
         margin: EdgeInsets.all(1),
         child: Column(

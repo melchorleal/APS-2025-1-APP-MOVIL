@@ -31,76 +31,98 @@ final String time = '12:02';
           children: [
             FolioNumBox(folio: folio),
             StatusReportBox(status: status, date: date, time: time),
-            Expanded( //ocupar todo el epacio restante
-              child: Container( //dar margenes
-                margin: EdgeInsets.symmetric(horizontal: 36, vertical: 18),
-                child: Row( //crear izquierda y derecha
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 3, // 30%
-                      child: Stack(
-                        alignment: Alignment.center,
+            TimelineStatusBox(statuses: statuses, currentStatus: currentStatus, date: date, time: time),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+class TimelineStatusBox extends StatelessWidget {
+  const TimelineStatusBox({
+    super.key,
+    required this.statuses,
+    required this.currentStatus,
+    required this.date,
+    required this.time,
+  });
+
+  final List<String> statuses;
+  final int currentStatus;
+  final String date;
+  final String time;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded( //ocupar todo el epacio restante
+      child: Container( //dar margenes
+        margin: EdgeInsets.symmetric(horizontal: 36, vertical: 18),
+        child: Row( //crear izquierda y derecha
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 60),
+                    height: double.infinity,
+                    width: 4,
+                    decoration: BoxDecoration(
+                      color: MyColors.gray,
+                      border: Border.all(
+                        color: MyColors.gray,
+                      ),
+                    ),
+                  ),
+                  _TimelineStatus(statuses: statuses, currentStatus: currentStatus),
+                ]
+              ),
+            ),
+            Expanded(
+              flex: 7,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(statuses.length, (i) {
+                  final bool isActive = i == currentStatus;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        statuses[i],
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      isActive ? Row(
                         children: [
-                          Container(
-                            margin: EdgeInsets.symmetric(vertical: 60),
-                            height: double.infinity,
-                            width: 4,
-                            decoration: BoxDecoration(
+                          Text(
+                           date,
+                            style: TextStyle(
+                              fontSize: 14,
                               color: MyColors.gray,
-                              border: Border.all(
-                                color: MyColors.gray,
-                              ),
                             ),
                           ),
-                          _TimelineStatus(statuses: statuses, currentStatus: currentStatus),
-                        ]
-                      ),
-                    ),
-                    Expanded(
-                      flex: 7,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: List.generate(statuses.length, (i) {
-                          final bool isActive = i == currentStatus;
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                statuses[i],
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              isActive ? Row(
-                                children: [
-                                  Text(
-                                   date, // Mostrar fecha solo si es el estado actual
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: MyColors.gray,
-                                    ),
-                                  ),
-                                  SizedBox(width: 16),
-                                  Text(
-                                    time, // Mostrar hora solo si es el estado actual
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: MyColors.gray,
-                                    ),
-                                  ),
-                                ],
-                              ) : SizedBox(height: 16,),
-                            ],
-                          );
-                        }),
-                      ),
-                    ),
-                  ],
-                ),
+                          SizedBox(width: 16),
+                          Text(
+                            time,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: MyColors.gray,
+                            ),
+                          ),
+                        ],
+                      ) : SizedBox(height: 16,),
+                    ],
+                  );
+                }),
               ),
             ),
           ],
@@ -110,9 +132,11 @@ final String time = '12:02';
   }
 }
 
+
+
 class _TimelineStatus extends StatelessWidget {
   final List<String> statuses;
-  final int currentStatus; // 
+  final int currentStatus; 
   const _TimelineStatus({required this.statuses, required this.currentStatus});
 
   @override
@@ -134,6 +158,8 @@ class _TimelineStatus extends StatelessWidget {
     );
   }
 }
+
+
 
 class StatusReportBox extends StatelessWidget {
 
@@ -188,7 +214,7 @@ class StatusReportBox extends StatelessWidget {
         Row(
           children: [
             Text(
-              /*package.date.toString()*/
+//              package.date.toString()
               date,
               style: TextStyle(
                 fontSize: 16,
@@ -197,7 +223,7 @@ class StatusReportBox extends StatelessWidget {
             ),
             SizedBox(width: 16),
             Text(
-              /*package.time.toString()*/
+//              package.time.toString()
               time,
               style: TextStyle(
                 fontSize: 16,
@@ -241,6 +267,8 @@ class StatusReportBox extends StatelessWidget {
     );
   }
 }
+
+
 
 class FolioNumBox extends StatelessWidget {
   final String folio;
@@ -289,6 +317,8 @@ class FolioNumBox extends StatelessWidget {
     );
   }
 }
+
+
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({ super.key, });

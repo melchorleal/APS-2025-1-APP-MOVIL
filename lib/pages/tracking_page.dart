@@ -1,5 +1,13 @@
+import 'package:aps_2025_1_app_movil/models/package_model.dart';
 import 'package:aps_2025_1_app_movil/utils/my_colors.dart';
 import 'package:flutter/material.dart';
+
+final List<String> statuses = [
+  'Paquete entregado.',
+  'Aduana completada.',
+  'Paquete ha sido enviado.',
+  'Pedido registrado.',
+];
 
 class TrackingPage extends StatelessWidget {
 
@@ -7,21 +15,7 @@ class TrackingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final String folio = ModalRoute.of(context)?.settings.arguments as String;
-  final List<String> statuses = [
-  'Paquete entregado',
-  'Aduana completada',
-  'Paquete enviado',
-  'Pedido registrado',
-];
-  final String status = 'Paquete entregado';
-//  final String status = 'Paquete enviado';
-//  final String status = 'Aduana completada';
-//  final String status = 'Pedido registrado';
-
-final int currentStatus = statuses.indexOf(status);
-final String date = '12 Ene 2025';
-final String time = '12:02';
+    final Package paquete = ModalRoute.of(context)?.settings.arguments as Package;
 
     return SafeArea(
       child: Scaffold(
@@ -29,9 +23,9 @@ final String time = '12:02';
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FolioNumBox(folio: folio),
-            StatusReportBox(status: status, date: date, time: time),
-            TimelineStatusBox(statuses: statuses, currentStatus: currentStatus, date: date, time: time),
+            FolioNumBox(package: paquete),
+            StatusReport(package: paquete),
+            TimelineStatusBox(package: paquete),
           ],
         ),
       ),
@@ -42,21 +36,18 @@ final String time = '12:02';
 
 
 class TimelineStatusBox extends StatelessWidget {
+  final Package package;
+
   const TimelineStatusBox({
     super.key,
-    required this.statuses,
-    required this.currentStatus,
-    required this.date,
-    required this.time,
+    required this.package,
   });
 
-  final List<String> statuses;
-  final int currentStatus;
-  final String date;
-  final String time;
 
   @override
   Widget build(BuildContext context) {
+    final int currentStatus = statuses.indexOf(package.status);
+    
     return Expanded( //ocupar todo el epacio restante
       child: Container( //dar margenes
         margin: EdgeInsets.symmetric(horizontal: 36, vertical: 18),
@@ -79,7 +70,7 @@ class TimelineStatusBox extends StatelessWidget {
                       ),
                     ),
                   ),
-                  _TimelineStatus(statuses: statuses, currentStatus: currentStatus),
+                  _TimelineStatus( currentStatus: currentStatus),
                 ]
               ),
             ),
@@ -104,7 +95,7 @@ class TimelineStatusBox extends StatelessWidget {
                       isActive ? Row(
                         children: [
                           Text(
-                           date,
+                           package.date,
                             style: TextStyle(
                               fontSize: 14,
                               color: MyColors.gray,
@@ -112,7 +103,7 @@ class TimelineStatusBox extends StatelessWidget {
                           ),
                           SizedBox(width: 16),
                           Text(
-                            time,
+                            package.time,
                             style: TextStyle(
                               fontSize: 14,
                               color: MyColors.gray,
@@ -135,9 +126,8 @@ class TimelineStatusBox extends StatelessWidget {
 
 
 class _TimelineStatus extends StatelessWidget {
-  final List<String> statuses;
   final int currentStatus; 
-  const _TimelineStatus({required this.statuses, required this.currentStatus});
+  const _TimelineStatus({ required this.currentStatus});
 
   @override
   Widget build(BuildContext context) {
@@ -160,33 +150,31 @@ class _TimelineStatus extends StatelessWidget {
 }
 
 
-
 class StatusReportBox extends StatelessWidget {
+  final Package package;
+  late String simpleStatus = 'Desconocido';
+  late Color statusColor = Colors.black;
 
-  late final String simpleStatus;
-  late final Color simpleStatusColor;
-  final String date;
-  final String time;
-  StatusReportBox({super.key, required String status, required this.date, required this.time}) {
-    if (status == 'Pedido registrado') {
-      simpleStatus = 'Pendiente';
-      simpleStatusColor = MyColors.red;
-    } else if (status == 'Paquete enviado') {
-      simpleStatus = 'Enviado';
-      simpleStatusColor = MyColors.blue;
-    } else if (status == 'Aduana completada') {
-      simpleStatus = 'Enviado';
-      simpleStatusColor = MyColors.blue;
-    } else if (status == 'Paquete entregado') {
+  StatusReportBox({super.key, required this.package,}) {
+    final String status = package.status;
+    if (status == statuses[0]) {
       simpleStatus = 'Entregado';
-      simpleStatusColor = MyColors.green;
-    } else {
-      simpleStatus = 'Desconocido';
-      simpleStatusColor = Colors.black;
+      statusColor = MyColors.green;
+    } else if (status == statuses[1]) {
+      simpleStatus = 'Enviado';
+      statusColor = MyColors.blue;
+    } else if (status == statuses[2]) {
+      simpleStatus = 'Enviado';
+      statusColor = MyColors.blue;
+    } else if (status == statuses[3]) {
+      simpleStatus = 'Pendiente';
+      statusColor = MyColors.red;
     }
   }
-
-  Column statusReportData() {
+  
+  @override
+  Widget build(BuildContext context) {
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -205,7 +193,7 @@ class StatusReportBox extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: simpleStatusColor,
+                color: statusColor,
               ),
             ),
           ],
@@ -214,8 +202,7 @@ class StatusReportBox extends StatelessWidget {
         Row(
           children: [
             Text(
-//              package.date.toString()
-              date,
+              package.date,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -223,8 +210,7 @@ class StatusReportBox extends StatelessWidget {
             ),
             SizedBox(width: 16),
             Text(
-//              package.time.toString()
-              time,
+              package.time,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -234,7 +220,15 @@ class StatusReportBox extends StatelessWidget {
         )
       ],
     );
+  
   }
+}
+
+
+class StatusReport extends StatelessWidget {
+  final Package package;
+
+  const StatusReport({super.key, required this.package});
 
   @override
   Widget build(BuildContext context) {
@@ -260,7 +254,7 @@ class StatusReportBox extends StatelessWidget {
                 color: MyColors.gray,
               ),
             ),
-            child: statusReportData(),
+            child: StatusReportBox(package: package),
           ),
         ],
       ),
@@ -269,11 +263,10 @@ class StatusReportBox extends StatelessWidget {
 }
 
 
-
 class FolioNumBox extends StatelessWidget {
-  final String folio;
+  final Package package;
 
-  const FolioNumBox({super.key, required this.folio});
+  const FolioNumBox({super.key, required this.package});
 
   @override
   Widget build(BuildContext context) {
@@ -291,7 +284,7 @@ class FolioNumBox extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
               Text(
-                '#$folio',
+                '#${package.folio}',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.left,
               ),
@@ -317,7 +310,6 @@ class FolioNumBox extends StatelessWidget {
     );
   }
 }
-
 
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {

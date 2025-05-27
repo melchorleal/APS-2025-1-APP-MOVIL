@@ -14,14 +14,14 @@ class PackageProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   Future<void> fetchPackage(String folio) async {
-    final url = Uri.parse('https://localhost:777/Package/$folio');
+    final url = Uri.parse('http://192.168.1.68:777/api/tracking/$folio');
     
     try {
       final response = await http.get(url);
+      print('Response body: ' + response.body);
 
       if (response.statusCode == 200) {
-//      _package = Package.fromJson(json.decode(response.body));
-        _package = Package.fromMap(json.decode(response.body));
+        _package = Package.fromMap(json.decode(response.body)['body']);
         _errorMessage = null;
       } else if (response.statusCode == 404) {
         _package = null;

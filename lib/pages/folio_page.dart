@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/package_provider.dart';
 
+
+
 class FolioPage extends StatelessWidget {
   const FolioPage({super.key});
 
@@ -60,7 +62,7 @@ class _FolioTitle extends StatelessWidget {
 class _FolioInput extends StatelessWidget {
   final TextEditingController controller;
 
-  const _FolioInput({Key? key, required this.controller});
+  const _FolioInput({required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +71,7 @@ class _FolioInput extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 50),
       child: TextField(
         controller: controller,
-
+        
         decoration: InputDecoration(
           hintText: 'Ingrese su número de folio',
           hintStyle: TextStyle(fontSize: 13.5, color: MyColors.gray),
@@ -91,7 +93,7 @@ class _FolioInput extends StatelessWidget {
 class _SearchButton extends StatelessWidget {
   final TextEditingController controller;
 
-  const _SearchButton({super.key, required this.controller});
+  const _SearchButton({required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +102,7 @@ class _SearchButton extends StatelessWidget {
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: () => Navigator.pushNamed(context, 'tracking_page', arguments: controller.text),
-//        onPressed: () => _onSearchPressed(context, controller),
+        onPressed: () => _onSearchPressed(context, controller),
         style: ElevatedButton.styleFrom(
           backgroundColor: MyColors.blue,
           shape: RoundedRectangleBorder(
@@ -120,10 +121,20 @@ class _SearchButton extends StatelessWidget {
 
 Future<void> _onSearchPressed(BuildContext context, TextEditingController controller) async {
   final folio = controller.text.trim();
+  final folioInt = int.tryParse(folio);
   if (folio.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Por favor ingrese un número de folio.'),
+        duration: Duration(seconds: 3),
+      ),
+    );
+    return;
+  }
+  if (folioInt == null ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('El número de folio debe ser un número entero.'),
         duration: Duration(seconds: 3),
       ),
     );

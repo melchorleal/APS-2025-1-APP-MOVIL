@@ -11,7 +11,7 @@ final List<String> statuses = [
 
 class TrackingPage extends StatelessWidget {
 
-  TrackingPage({super.key});
+  const TrackingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +48,13 @@ class TimelineStatusBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final int currentStatus = statuses.indexOf(package.status);
     
-    return Expanded( //ocupar todo el epacio restante
-      child: Container( //dar margenes
+    return Expanded( 
+      child: Container( 
         margin: EdgeInsets.symmetric(horizontal: 36, vertical: 18),
-        child: Row( //crear izquierda y derecha
+        child: Row( 
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            //Izquierda
             Expanded(
               flex: 3,
               child: Stack(
@@ -74,6 +75,7 @@ class TimelineStatusBox extends StatelessWidget {
                 ]
               ),
             ),
+            //Derecha
             Expanded(
               flex: 7,
               child: Column(
@@ -150,12 +152,13 @@ class _TimelineStatus extends StatelessWidget {
 }
 
 
+// ignore: must_be_immutable
 class StatusReportBox extends StatelessWidget {
   final Package package;
   late String simpleStatus = 'Desconocido';
   late Color statusColor = Colors.black;
 
-  StatusReportBox({super.key, required this.package,}) {
+   StatusReportBox({super.key, required this.package,}) {
     final String status = package.status;
     if (status == statuses[0]) {
       simpleStatus = 'Entregado';
@@ -298,7 +301,7 @@ class FolioNumBox extends StatelessWidget {
               color: MyColors.bg,
               boxShadow: [
                 BoxShadow(
-                  color: const Color.fromARGB(255, 134, 134, 134).withOpacity(0.2),
+                  color: const Color.fromARGB(51, 134, 134, 134),
                   blurRadius: 2,
                   spreadRadius: 1,
                 ),
@@ -325,7 +328,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         color: Color(0xFFFEF7FF),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: const Color.fromARGB(25, 0, 0, 0),
             blurRadius: 5,
             offset: Offset(0, 2),
           ),

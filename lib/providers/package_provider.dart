@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:aps_2025_1_app_movil/models/package_model.dart';
-//class ShipmentProvider {
-//class ParcelProvider {
 
 class PackageProvider with ChangeNotifier {
   Package? _package;
@@ -18,7 +16,6 @@ class PackageProvider with ChangeNotifier {
     
     try {
       final response = await http.get(url);
-      print('Response body: ' + response.body);
 
       if (response.statusCode == 200) {
         _package = Package.fromMap(json.decode(response.body)['body']);

@@ -10,6 +10,7 @@ class FolioPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FocusNode focusNode = FocusNode();
     final TextEditingController folioController = TextEditingController();
 
     return Scaffold(
@@ -21,8 +22,8 @@ class FolioPage extends StatelessWidget {
           children: [
             _Logo(),
             _FolioTitle(),
-            _FolioInput(controller: folioController,),
-            _SearchButton(controller: folioController),
+            _FolioInput(controller: folioController, focusNode: focusNode,),
+            _SearchButton(controller: folioController, focusNode: focusNode),
           ],
         ),
       ),
@@ -61,8 +62,10 @@ class _FolioTitle extends StatelessWidget {
 
 class _FolioInput extends StatelessWidget {
   final TextEditingController controller;
+  final FocusNode focusNode;
 
-  const _FolioInput({required this.controller});
+
+  _FolioInput({required this.controller, required this.focusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +74,7 @@ class _FolioInput extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 50),
       child: TextField(
         controller: controller,
-        
+        focusNode: focusNode,
         decoration: InputDecoration(
           hintText: 'Ingrese su número de folio',
           hintStyle: TextStyle(fontSize: 13.5, color: MyColors.gray),
@@ -91,9 +94,10 @@ class _FolioInput extends StatelessWidget {
 }
 
 class _SearchButton extends StatelessWidget {
+  final FocusNode focusNode;
   final TextEditingController controller;
 
-  const _SearchButton({required this.controller});
+  _SearchButton({required this.controller, required this.focusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +106,7 @@ class _SearchButton extends StatelessWidget {
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: () => _onSearchPressed(context, controller),
+        onPressed: () => _onSearchPressed(context, controller, focusNode),
         style: ElevatedButton.styleFrom(
           backgroundColor: MyColors.blue,
           shape: RoundedRectangleBorder(
@@ -119,7 +123,7 @@ class _SearchButton extends StatelessWidget {
   }
 }
 
-Future<void> _onSearchPressed(BuildContext context, TextEditingController controller) async {
+Future<void> _onSearchPressed(BuildContext context, TextEditingController controller, FocusNode focusNode) async {
   final folio = controller.text.trim();
   final folioInt = int.tryParse(folio);
   if (folio.isEmpty) {
@@ -143,7 +147,13 @@ Future<void> _onSearchPressed(BuildContext context, TextEditingController contro
   final packageProvider = Provider.of<PackageProvider>(context, listen: false);
   await packageProvider.fetchPackage(folio);
   if (packageProvider.package != null) {
-    Navigator.pushNamed(context, 'tracking_page', arguments: packageProvider.package);
+    focusNode.unfocus();
+    Navigator.pushNamed(
+      context, 'tracking_page', 
+      arguments: {
+      'packageArg': packageProvider.package, 'focusNodeArg': focusNode
+      } 
+    );
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

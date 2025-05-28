@@ -15,7 +15,10 @@ class TrackingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Package paquete = ModalRoute.of(context)?.settings.arguments as Package;
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final Package paquete = args['packageArg'] as Package;
+    final FocusNode focusNode = args['focusNodeArg'] as FocusNode;
+    focusNode.unfocus();
 
     return SafeArea(
       child: Scaffold(
@@ -342,6 +345,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
+            FocusScope.of(context).unfocus();
             Navigator.pop(context);
           },
         ),

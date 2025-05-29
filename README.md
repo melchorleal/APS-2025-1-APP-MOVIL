@@ -29,6 +29,9 @@ UAQExpress Seguimiento es una aplicación móvil Flutter que permite a los usuar
 
 ## Créditos
 - Universidad Autónoma de Querétaro
-- FIF - Administración de Proyectos de Software 2025-1
+- Facultad de informática
+- Grupo 32
+- Materia: Administración de Proyectos de Software
+- Semestre 6 Enero-Junio 2025
 
 ---

@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'UAQExpress Clientes',
+      title: 'UAQExpress SEGUIMIENTO',
       debugShowCheckedModeBanner: false,
       initialRoute: 'folio_page',
       routes: {

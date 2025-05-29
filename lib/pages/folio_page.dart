@@ -93,11 +93,69 @@ class _FolioInput extends StatelessWidget {
   }
 }
 
-class _SearchButton extends StatelessWidget {
+class _SearchButton extends StatefulWidget {
   final FocusNode focusNode;
   final TextEditingController controller;
 
   _SearchButton({required this.controller, required this.focusNode});
+
+  @override
+  State<_SearchButton> createState() => _SearchButtonState();
+}
+
+class _SearchButtonState extends State<_SearchButton> {
+  bool isLoading = false;
+
+  Future<void> _onSearchPressed(BuildContext context) async {
+    if (isLoading) return;
+    setState(() => isLoading = true);
+    final folio = widget.controller.text.trim();
+    final folioInt = int.tryParse(folio);
+    if (folio.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Por favor ingrese un número de folio.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      setState(() => isLoading = false);
+      return;
+    }
+    if (folioInt == null ) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('El número de folio debe ser un número entero.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      setState(() => isLoading = false);
+      return;
+    }
+    final packageProvider = Provider.of<PackageProvider>(context, listen: false);
+    await packageProvider.fetchPackage(folio);
+    if (packageProvider.package != null) {
+      widget.focusNode.unfocus();
+      Navigator.pushNamed(
+        context, 'tracking_page',
+        arguments: {
+          'packageArg': packageProvider.package,
+          'focusNodeArg': widget.focusNode
+        }
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            packageProvider.errorMessage ?? 'Error al buscar el paquete.',
+            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+          ),
+          duration: Duration(seconds: 3),
+          backgroundColor: const Color(0xFFFFA1A1),
+        ),
+      );
+    }
+    setState(() => isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +164,7 @@ class _SearchButton extends StatelessWidget {
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: () => _onSearchPressed(context, controller, focusNode),
+        onPressed: isLoading ? null : () => _onSearchPressed(context),
         style: ElevatedButton.styleFrom(
           backgroundColor: MyColors.blue,
           shape: RoundedRectangleBorder(
@@ -114,55 +172,19 @@ class _SearchButton extends StatelessWidget {
           ),
           textStyle: null,
         ),
-        child: Text(
-          'Buscar',
-          style: TextStyle(color: Colors.white, fontSize: 18),
-        ),
-      ),
-    );
-  }
-}
-
-Future<void> _onSearchPressed(BuildContext context, TextEditingController controller, FocusNode focusNode) async {
-  final folio = controller.text.trim();
-  final folioInt = int.tryParse(folio);
-  if (folio.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Por favor ingrese un número de folio.'),
-        duration: Duration(seconds: 3),
-      ),
-    );
-    return;
-  }
-  if (folioInt == null ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('El número de folio debe ser un número entero.'),
-        duration: Duration(seconds: 3),
-      ),
-    );
-    return;
-  }
-  final packageProvider = Provider.of<PackageProvider>(context, listen: false);
-  await packageProvider.fetchPackage(folio);
-  if (packageProvider.package != null) {
-    focusNode.unfocus();
-    Navigator.pushNamed(
-      context, 'tracking_page', 
-      arguments: {
-      'packageArg': packageProvider.package, 'focusNodeArg': focusNode
-      } 
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          packageProvider.errorMessage ?? 'Error al buscar el paquete.',
-          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        ),
-        duration: Duration(seconds: 3),
-        backgroundColor: const Color(0xFFFFA1A1),
+        child: isLoading
+            ? SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2.5,
+                ),
+              )
+            : Text(
+                'Buscar',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
       ),
     );
   }

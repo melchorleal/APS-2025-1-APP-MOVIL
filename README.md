@@ -32,3 +32,4 @@ UAQExpress Seguimiento es una aplicación móvil Flutter que permite a los usuar
 - Facultad de informática
 - Materia: Administración de Proyectos de Software
 - Grupo 32, Semestre 6 Enero-Junio 2025
+- Gael de Jesús Posada Hernández
